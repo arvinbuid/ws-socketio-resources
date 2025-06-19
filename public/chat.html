@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Chat app | socket.io</title>
+  </head>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+    body {
+      font-family: "Inter", sans-serif;
+    }
+  </style>
+
+  <body>
+    <div class="container h-screen">
+      <div class="flex flex-col justify-center items-center gap-6 space-y-3">
+        <form class="mt-10" id="message-form">
+          <div>
+            <input
+              type="text"
+              placeholder="Enter your message"
+              id="user-message"
+              class="border border-gray-400 px-4 py-1 rounded-md outline-none w-96 placeholder:text-sm placeholder:tracking-tight"
+            />
+            <button
+              type="submit"
+              class="bg-green-500 text-white px-4 py-2 rounded-sm cursor-pointer text-xs"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+
+        <ul id="messages"></ul>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io("http://localhost:8001");
+      socket.on("connect", () => {
+        // connection stuff
+      });
+      socket.on("fromServer", (data) => {
+        console.log(data);
+      });
+
+      socket.on("newMessageToClients", (newMessage) => {
+        document.querySelector("#messages").innerHTML += `<li>${newMessage.message}</li>`;
+      });
+
+      // DOM manipulation here
+      document.querySelector("#message-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const newMessage = document.querySelector("#user-message").value;
+        socket.emit("newMessageFromClient", {message: newMessage});
+      });
+    </script>
+  </body>
+</html>
