@@ -6,9 +6,15 @@
 
   socket.on("connect", () => {
     console.log(socket.id);
-    socket.on("fromServer", (data) => {
-      console.log(data);
-    });
     socket.emit("fromClient", {data: "Hello from the browser"});
+  });
+
+  socket.on("fromServer", (data) => {
+    console.log(data);
+  });
+
+  socket.io.on("reconnect", (attempt) => {
+    console.log("reconnect...");
+    console.log(attempt);
   });
 </script>
