@@ -2,7 +2,7 @@
   "name": "socket.io",
   "version": "1.0.0",
   "type": "module",
-  "main": "script.js",
+  "main": "namespace.js",
   "scripts": {
     "dev": "nodemon chat.js"
   },

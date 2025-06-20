@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.static(__dirname + "/public")); // Serve static files
 
-const expressServer = app.listen(8000);
+const expressServer = app.listen(8001);
 const io = new Server(expressServer);
 
 io.on("connection", (socket) => {

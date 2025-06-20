@@ -44,9 +44,6 @@
       socket.on("connect", () => {
         // connection stuff
       });
-      socket.on("fromServer", (data) => {
-        console.log(data);
-      });
 
       socket.on("newMessageToClients", (newMessage) => {
         document.querySelector("#messages").innerHTML += `<li>${newMessage.message}</li>`;
@@ -56,7 +53,10 @@
       document.querySelector("#message-form").addEventListener("submit", (e) => {
         e.preventDefault();
         const newMessage = document.querySelector("#user-message").value;
+        const inputForm = document.querySelector("#user-message");
+
         socket.emit("newMessageFromClient", {message: newMessage});
+        inputForm.value = "";
       });
     </script>
   </body>
