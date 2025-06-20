@@ -15,8 +15,7 @@ const io = new Server(expressServer);
 
 io.on("connection", (socket) => {
   console.log(socket.id + " connected");
-  socket.emit("fromServer", {data: "hello from the server"}); // emit custom event
-  socket.on("fromClient", (data) => {
-    console.log(data);
+  socket.on("newMessageFromClient", (dataFromClient) => {
+    io.emit("newMessageToClients", {message: dataFromClient.message}); // Sent to all sockets
   });
 });
