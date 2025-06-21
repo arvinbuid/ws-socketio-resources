@@ -19,23 +19,20 @@ socket.on("welcome", (data) => {
 
 // listen for nsList event from the server
 socket.on("nsList", (nsData) => {
+  const lastNs = localStorage.getItem("lastNs") || "/wiki";
   const nsDiv = document.querySelector(".namespaces");
+  nsDiv.innerHTML = "";
   nsData.forEach((ns) => {
     nsDiv.innerHTML += `<div class="namespace" ns=${ns.endpoint}><img src=${ns.image}></div>`;
   });
 
-  Array.from(document.getElementsByClassName("namespace")).forEach((ns) => {
-    ns.addEventListener("click", () => {
-      const nsEndpoint = ns.getAttribute("ns"); // get the ns attribute
-      const clickedNs = nsData.find((ns) => ns.endpoint === nsEndpoint);
-      const rooms = clickedNs.rooms;
-
-      const roomsList = document.querySelector(".room-list");
-      roomsList.innerHTML = "";
-      // loop through each room and add it to the dom
-      rooms.forEach((room) => {
-        roomsList.innerHTML += `<li><span class="glyphicon glyphicon-lock"></span>${room.roomTitle}</li>`;
-      });
+  Array.from(document.getElementsByClassName("namespace")).forEach((element) => {
+    element.addEventListener("click", () => {
+      joinNs(element, nsData);
     });
   });
+
+  // if lastNs is set, grab the element and set it
+  const lastNsElement = document.querySelector(`.namespace[ns="${lastNs}"]`);
+  if (lastNsElement) joinNs(lastNsElement, nsData);
 });
