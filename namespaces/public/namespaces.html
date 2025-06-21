@@ -52,6 +52,14 @@
         document.querySelector("#messages").innerHTML += `<li>${newMessage.message}</li>`;
       });
 
+      socket.on("welcomeToRoom1", (data) => {
+        console.log("Welcome to room 1");
+      });
+
+      socketAdmin.on("welcomeToRoom1", (data) => {
+        console.log("Admin joined room 1");
+      });
+
       // DOM manipulation here
       document.querySelector("#message-form").addEventListener("submit", (e) => {
         e.preventDefault();
