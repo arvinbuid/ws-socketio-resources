@@ -40,7 +40,10 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-      const socket = io("http://localhost:8001");
+      // multiplexing - same server but different namespaces
+      const socket = io("http://localhost:8001"); // default namespace
+      const socketAdmin = io("http://localhost:8001/admin"); // admin namespace
+
       socket.on("connect", () => {
         // connection stuff
       });
