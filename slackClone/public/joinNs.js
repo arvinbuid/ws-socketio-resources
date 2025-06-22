@@ -1,5 +1,5 @@
 // We could ask the server for fresh info on this namespace which is BAD!
-// We have socket.io/ws, and the server will tell us when something has happened
+// We have socket.io/ws, and the server will tell us when something has happen
 
 const joinNs = (element, nsData) => {
   const nsEndpoint = element.getAttribute("ns"); // get the ns attribute
@@ -12,9 +12,23 @@ const joinNs = (element, nsData) => {
   let roomsHtml = "";
   // loop through each room and add it to the dom
   rooms.forEach((room) => {
-    roomsHtml += `<li><span class="glyphicon glyphicon-lock"></span>${room.roomTitle}</li>`;
+    roomsHtml += `
+      <li class="room" namespaceId=${room.namespaceId}>
+        <span class="fa-solid fa-${room.privateRoom ? "lock" : "globe"}"></span>${room.roomTitle}
+      </li>
+    `;
+  });
+  roomsList.innerHTML = roomsHtml;
+
+  // add click listener to each room so the client can tell the server it wants to join.
+  const roomNodes = document.querySelectorAll(".room");
+  Array.from(roomNodes).forEach((el) => {
+    el.addEventListener("click", (e) => {
+      // console.log("clicked on " + e.target.innerText);
+      const namespaceId = el.getAttribute("namespaceId");
+      joinRoom(e.target.innerText, namespaceId);
+    });
   });
 
-  roomsList.innerHTML = roomsHtml;
   localStorage.setItem("lastNs", nsEndpoint);
 };
