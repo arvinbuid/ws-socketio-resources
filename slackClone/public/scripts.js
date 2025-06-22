@@ -24,6 +24,9 @@ socket.on("nsList", (nsData) => {
   nsDiv.innerHTML = "";
   nsData.forEach((ns) => {
     nsDiv.innerHTML += `<div class="namespace" ns=${ns.endpoint}><img src=${ns.image}></div>`;
+
+    // join this namespace with io()
+    io(`http://localhost:9000${ns.endpoint}`); // /wiki, /mozilla, /linux
   });
 
   Array.from(document.getElementsByClassName("namespace")).forEach((element) => {

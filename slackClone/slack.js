@@ -2,6 +2,7 @@
 const express = require("express");
 const app = express();
 const socketio = require("socket.io");
+
 const namespaces = require("./data/namespaces");
 
 app.use(express.static(__dirname + "/public"));
@@ -15,4 +16,10 @@ io.on("connection", (socket) => {
     console.log(socket.id + " is connected");
   });
   socket.emit("nsList", namespaces);
+});
+
+namespaces.forEach((namespace) => {
+  io.of(namespace.endpoint).on("connection", (socket) => {
+    console.log(`${socket.id} connected to ${namespace.endpoint}`);
+  });
 });
