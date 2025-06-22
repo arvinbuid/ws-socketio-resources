@@ -1,3 +1,6 @@
+// We could ask the server for fresh info on this namespace which is BAD!
+// We have socket.io/ws, and the server will tell us when something has happened
+
 const joinNs = (element, nsData) => {
   const nsEndpoint = element.getAttribute("ns"); // get the ns attribute
   const clickedNs = nsData.find((ns) => ns.endpoint === nsEndpoint);

@@ -26,7 +26,11 @@ socket.on("nsList", (nsData) => {
     nsDiv.innerHTML += `<div class="namespace" ns=${ns.endpoint}><img src=${ns.image}></div>`;
 
     // join this namespace with io()
-    io(`http://localhost:9000${ns.endpoint}`); // /wiki, /mozilla, /linux
+    const thisNsSocket = io(`http://localhost:9000${ns.endpoint}`); // /wiki, /mozilla, /linux
+    thisNsSocket.on("nsChange", (data) => {
+      console.log("namespace changed!");
+      console.log(data);
+    });
   });
 
   Array.from(document.getElementsByClassName("namespace")).forEach((element) => {
