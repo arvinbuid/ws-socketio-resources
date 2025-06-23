@@ -29,9 +29,10 @@ document.querySelector("#message-form").addEventListener("submit", (e) => {
   // emit a newMessageToRoom event to server
   nameSpaceSockets[selectedNsId].emit("newMessageToRoom", {
     newMessage,
-    date: Date.now(),
+    msgDate: Date.now(),
     avatar: "https://placehold.co/30x30",
     userName,
+    selectedNsId,
   });
 
   messageInput.value = ""; // clear the input
@@ -53,6 +54,7 @@ const addListeners = (nsId) => {
   if (!listeners.messageToRoom[nsId]) {
     // add the nsId listener to this namespace
     nameSpaceSockets[nsId].on("messageToRoom", (messageObj) => {
+      document.querySelector("#messages").innerHTML += buildMessageHtml(messageObj);
       console.log(messageObj);
     });
     listeners.messageToRoom[nsId] = true;
@@ -60,7 +62,6 @@ const addListeners = (nsId) => {
 };
 
 socket.on("connect", () => {
-  // console.log("Connected!");
   socket.emit("clientConnect");
 });
 // listen for nsList event from the server

@@ -30,8 +30,11 @@ io.on("connection", (socket) => {
 namespaces.forEach((namespace) => {
   io.of(namespace.endpoint).on("connection", (socket) => {
     // console.log(`${socket.id} connected to ${namespace.endpoint}`);
-    socket.on("joinRoom", async (roomTitle, ackCallback) => {
+    socket.on("joinRoom", async (roomObj, ackCallback) => {
       // need to fetch the history
+      const thisNs = namespaces[roomObj.namespaceId];
+      const thisRoom = thisNs.rooms.find((room) => room.roomTitle === roomObj.roomTitle);
+      const thisRoomHistory = thisRoom.history;
 
       // leave all rooms (except own room ), because the client can only be in one room
       const rooms = socket.rooms;
@@ -47,12 +50,13 @@ namespaces.forEach((namespace) => {
       // join the room
       // NOTE - roomTitle is coming from the client, which is NOT safe
       // Auth to make sure the socket has right to be in that room
-      socket.join(roomTitle);
+      socket.join(roomObj.roomTitle);
 
       // fetch the number of sockets in this room
-      const socketCount = await io.of(namespace.endpoint).in(roomTitle).fetchSockets();
+      const socketCount = await io.of(namespace.endpoint).in(roomObj.roomTitle).fetchSockets();
       ackCallback({
         numUsers: socketCount.length,
+        thisRoomHistory,
       });
     });
 
@@ -65,6 +69,10 @@ namespaces.forEach((namespace) => {
       const currentRoom = [...rooms][1]; // this is a set, so we need to convert to an array, spread and access the 2nd element
       // send out this messageObj to everyone including the sender
       io.of(namespace.endpoint).in(currentRoom).emit("messageToRoom", messageObj);
+      // add this message to this room's history
+      const thisNs = namespaces[messageObj.selectedNsId];
+      const thisRoom = thisNs.rooms.find((room) => room.roomTitle === currentRoom);
+      thisRoom.addMessage(messageObj);
     });
   });
 });
