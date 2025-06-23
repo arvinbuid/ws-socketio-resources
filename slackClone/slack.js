@@ -21,7 +21,6 @@ app.get("/change-ns", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  socket.emit("welcome", "Welcome to the server!");
   socket.on("clientConnect", () => {
     console.log(socket.id + " is connected");
   });
@@ -55,6 +54,17 @@ namespaces.forEach((namespace) => {
       ackCallback({
         numUsers: socketCount.length,
       });
+    });
+
+    // listen to newMessageToRoom event from client
+    socket.on("newMessageToRoom", (messageObj) => {
+      console.log(messageObj);
+      // broadcast the message to all the connected clients (THIS ROOM ONLY!)
+      // find out what room this socket is
+      const rooms = socket.rooms;
+      const currentRoom = [...rooms][1]; // this is a set, so we need to convert to an array, spread and access the 2nd element
+      // send out this messageObj to everyone including the sender
+      io.of(namespace.endpoint).in(currentRoom).emit("messageToRoom", messageObj);
     });
   });
 });

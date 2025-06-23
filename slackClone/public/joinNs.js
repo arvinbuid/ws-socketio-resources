@@ -4,6 +4,8 @@
 const joinNs = (element, nsData) => {
   const nsEndpoint = element.getAttribute("ns"); // get the ns attribute
   const clickedNs = nsData.find((ns) => ns.endpoint === nsEndpoint);
+  // global so we can submit the message to the right place
+  selectedNsId = clickedNs.id;
   const rooms = clickedNs.rooms;
 
   const roomsList = document.querySelector(".room-list");
